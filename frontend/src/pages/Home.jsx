@@ -9,7 +9,7 @@ const Home = () => {
             <img className="w-14 ml-7" src={Logo} alt="" />
             <div className="bg-white pb-7 py-4 px-4">
                 <h2 className="text-3xl font-bold">Get Started with Uber</h2>
-                <Link to='/login' className="flex items-center justify-center text-2xl w-full bg-black text-white py-3 rounded mt-5 font-sans">Continue</Link>
+                <Link to='/login' className="flex items-center justify-center text-xl w-full bg-black text-white py-3 rounded mt-5 font-sans">Continue</Link>
             </div>
         </div>
     </div>
