@@ -37,8 +37,8 @@ const UserProtectWrapper = ({
 
     if (isLoading) {
         return (
-            <div>
-                Loading...
+            <div className='h-screen flex items-center justify-center'>
+                <p className='text-3xl font-semibold'>Loading...</p>
             </div>
         )
     }
