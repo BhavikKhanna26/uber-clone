@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Logo from "../assets/uber_logo.png";
 import { useGSAP } from '@gsap/react';
 import gsap from "gsap";
@@ -8,6 +8,8 @@ import VehiclePanel from "../components/VehiclePanel";
 import ConfirmedRide from "../components/ConfirmedRide";
 import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
+import 'leaflet/dist/leaflet.css';
+import MapView from "../components/MapView";
 
 const Home = () => {
     const [pickup, setPickup] = useState('');
@@ -23,6 +25,9 @@ const Home = () => {
     const [confirmRidePanel, setConfirmRidePanel] = useState(false);
     const [vehicleFound, setVehicleFound] = useState(false);
     const [waitingForDriver, setWaitingForDriver] = useState(false);
+    const [locationMode, setlocationMode] = useState(null);
+    const [PickupData, setPickupData] = useState({});
+    const [DestinationData, setDestinationData] = useState(null);
 
     const submitHandler = (e) => {
         e.preventDefault();
@@ -107,8 +112,10 @@ const Home = () => {
         <div className="h-screen relative overflow-hidden">
             <img className="w-16 absolute left-5 top-3" src={Logo}/>
             <div className="h-screen w-screen">
-                {/* Image for temporary use */}
-                <img className="h-full w-full object-cover" src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif" />
+                <MapView  
+                    PickupData={PickupData} 
+                    destination={destination}
+                />    
             </div>
 
             <div className="flex flex-col justify-end h-screen absolute top-0 w-full">
@@ -131,7 +138,8 @@ const Home = () => {
                         className="bg-[#eee] px-12 py-2 text-lg rounded-lg w-full mt-5" 
                         value={pickup}
                         onChange={(e) => {
-                            setPickup(e.target.value)
+                            setPickup(e.target.value);
+                            setlocationMode("pickup");
                         }}
                         type="text" 
                         placeholder="Add a pick-up location" />
@@ -145,13 +153,31 @@ const Home = () => {
                         type="text"
                         value={destination}
                         onChange={(e) => {
-                            setDestination(e.target.value)
+                            setDestination(e.target.value);
+                            setlocationMode("destination");
                         }} 
-                        placeholder="Enter your destination" />
+                        placeholder="Enter your destination" 
+                        />
                     </form>
                 </div>
                 <div ref={panelRef} className=" bg-white h-0 top-0">
-                    <LocationSearchPanel setPanelOpen = {setPanelOpen} setVehiclePanelOpen = {setVehiclePanelOpen} />
+                    <LocationSearchPanel 
+                        pickup={pickup} 
+                        destination={destination} 
+                        setPanelOpen = {setPanelOpen} 
+                        setVehiclePanelOpen = {setVehiclePanelOpen} 
+                        locationMode = {locationMode}   
+                        onLocationSelect = {(locationData) => {
+                            if(locationMode === "pickup") {
+                                console.log(locationData);
+                                setPickupData({lat: locationData.lat, lng: locationData.lng});
+                                setPickup(locationData.name);
+                            } else {
+                                setDestinationData(locationData);
+                                setDestination(locationData.name);
+                            }
+                        }}
+                    />
                 </div>
             </div>
         
