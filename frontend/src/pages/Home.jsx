@@ -111,10 +111,11 @@ const Home = () => {
     return (
         <div className="h-screen relative overflow-hidden">
             <img className="w-16 absolute left-5 top-3" src={Logo}/>
-            <div className="h-screen w-screen">
+            <div className="relative h-screen w-screen">
                 <MapView  
                     PickupData={PickupData} 
-                    destination={destination}
+                    DestinationData={DestinationData}
+                    panelOpen={panelOpen}
                 />    
             </div>
 
@@ -160,8 +161,8 @@ const Home = () => {
                         />
                     </form>
                 </div>
-                <div ref={panelRef} className=" bg-white h-0 top-0">
-                    <LocationSearchPanel 
+                <div ref={panelRef} className="bg-white h-0 top-0">
+                    <LocationSearchPanel
                         pickup={pickup} 
                         destination={destination} 
                         setPanelOpen = {setPanelOpen} 
@@ -169,11 +170,10 @@ const Home = () => {
                         locationMode = {locationMode}   
                         onLocationSelect = {(locationData) => {
                             if(locationMode === "pickup") {
-                                console.log(locationData);
                                 setPickupData({lat: locationData.lat, lng: locationData.lng});
                                 setPickup(locationData.name);
                             } else {
-                                setDestinationData(locationData);
+                                setDestinationData({lat : locationData.lat, lng: locationData.lng});
                                 setDestination(locationData.name);
                             }
                         }}

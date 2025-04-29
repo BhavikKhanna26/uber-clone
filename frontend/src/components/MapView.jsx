@@ -1,4 +1,4 @@
-import { Marker, Popup, TileLayer, MapContainer } from 'react-leaflet'
+import { Marker, Popup, TileLayer, MapContainer, ZoomControl, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 import React, { useEffect, useState } from 'react'
 
@@ -20,21 +20,40 @@ const MapView = (props) => {
   }
 
   useEffect(() => {
-    getCurrentLocation();
+    getCurrentLocation(); 
   }, []);
 
-  if(currentCoor.lat != null && currentCoor.lng!= null){
+  const pickupCoords =
+    props.PickupData?.lat && props.PickupData?.lng
+      ? {
+          lat: parseFloat(props.PickupData.lat),
+          lng: parseFloat(props.PickupData.lng),
+        }
+      : null;
+
+  const mapCenter = pickupCoords || currentCoor;
+
+  const zoomLevel = mapCenter.lat && mapCenter.lng ? 13 : 5;
+
+  const mapZIndex = props.panelOpen ? 0 : 0;
+
+  if(mapCenter.lat != null && mapCenter.lng!= null){
     return (
-      <MapContainer center={[currentCoor.lat, currentCoor.lng]} zoom={13} scrollWheelZoom={true} className="h-full w-full z-0">
+      <MapContainer center={[mapCenter.lat, mapCenter.lng]} zoom={zoomLevel} scrollWheelZoom={true} className={`h-full w-full z-${mapZIndex}`} zoomControl={false}>
+          <ZoomControl position="bottomright"/>
           <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' 
               url = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <Marker position={[currentCoor.lat, currentCoor.lng]} />
+          <Marker position={[mapCenter.lat, mapCenter.lng]} />
       </MapContainer>
     );
   }
   else{
-    return <div>Loading...</div>
+    return (
+      <div className='h-screen flex items-center justify-center'>
+        < p className='text-3xl font-semibold'>Loading...</p>
+      </div>
+    )
   }
 };
 
