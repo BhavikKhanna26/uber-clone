@@ -5,6 +5,39 @@ const LocationSearchPanel = (props) => {
     const [location, setlocation] = useState([]);
     const [loading, setloading] = useState(false);
     const [error, setError] = useState(null);
+
+    const getCurrentLocation = () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            setCurrentCoor({ lat, lng });
+          }, function(error) {
+            console.error('Error retrieving location: ', error);
+          });
+        }
+    };
+
+    useEffect(() => {
+        const fetchNearbyLocations = async () => {
+            try{
+                const nearbyNames = [];
+                const {lat , lng} = getCurrentLocation();
+                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/map/getNearbyPlaces?lat=${lat}&lng=${lng}`);
+                const data = await response.json();
+
+                nearbyNames.push(data.places.name);
+                console.log("nearby names: ",nearbyNames);
+                nearbyNames.push(...data.nearbyPlaces.map(place => place.name));
+                setlocation(nearbyNames);
+            }
+            catch(err){
+                setError(err);
+                console.error('Error fetching nearby locations: ', error);
+            }
+        };
+        fetchNearbyLocations();
+    })
     
     useEffect(() => {
         if(props.locationMode === 'pickup') {
@@ -32,7 +65,7 @@ const LocationSearchPanel = (props) => {
                 const response = await fetch(`${import.meta.env.VITE_BASE_URL}/map/getLocationData?location=${query}`);
                 const data = await response.json();
 
-                const names = (data.coordinates || []);
+                const names = (data.coordinates || []); 
                 setlocation(names);
             } catch (error) {
                 console.error('Error fetching locations:', error);
@@ -68,7 +101,7 @@ const LocationSearchPanel = (props) => {
                     location.map(function(elem, index){
                         return <div onClick={ () => {
                             props.onLocationSelect(elem);
-                            // props.setVehiclePanelOpen(true);
+                            props.setVehiclePanelOpen(true);
                             props.setPanelOpen(false);
                         }} key = {index} className='flex gap-4 border-2 p-1.5 rounded-xl border-gray-50 active:border-black items-center my-2 justify-start'>
                         <h2 className='bg-[#eee] h-8 w-12 flex items-center justify-center p-3 rounded-full'><i className="ri-square-fill text-xl"></i></h2>

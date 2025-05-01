@@ -28,6 +28,7 @@ const Home = () => {
     const [locationMode, setlocationMode] = useState(null);
     const [PickupData, setPickupData] = useState({});
     const [DestinationData, setDestinationData] = useState(null);
+    const [VehicleMode, setVehicleMode] = useState(null);
 
     const submitHandler = (e) => {
         e.preventDefault();
@@ -182,7 +183,7 @@ const Home = () => {
             </div>
         
             <div ref = {vehiclePanelRef} className="fixed w-full z-10 bottom-0 translate-y-full bg-white p-3 py-10 pt-12">
-                <VehiclePanel setConfirmRidePanel = {setConfirmRidePanel} setVehiclePanelOpen = {setVehiclePanelOpen} />
+                <VehiclePanel setConfirmRidePanel = {setConfirmRidePanel} setVehiclePanelOpen = {setVehiclePanelOpen} VehicleMode = {VehicleMode} setVehicleMode = {setVehicleMode} PickupData = {PickupData} DestinationData = {DestinationData} />
             </div>
 
             <div ref = {confirmRidePanelRef} className="fixed w-full z-10 bottom-0 translate-y-full bg-white p-3 py-6 pt-12">
