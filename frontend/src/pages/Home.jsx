@@ -183,11 +183,24 @@ const Home = () => {
             </div>
         
             <div ref = {vehiclePanelRef} className="fixed w-full z-10 bottom-0 translate-y-full bg-white p-3 py-10 pt-12">
-                <VehiclePanel setConfirmRidePanel = {setConfirmRidePanel} setVehiclePanelOpen = {setVehiclePanelOpen} VehicleMode = {VehicleMode} setVehicleMode = {setVehicleMode} PickupData = {PickupData} DestinationData = {DestinationData} />
+                <VehiclePanel 
+                    setConfirmRidePanel = {setConfirmRidePanel} 
+                    setVehiclePanelOpen = {setVehiclePanelOpen} 
+                    VehicleMode = {VehicleMode} 
+                    setVehicleMode = {setVehicleMode} 
+                    PickupData = {PickupData} 
+                    DestinationData = {DestinationData} 
+                />
             </div>
 
             <div ref = {confirmRidePanelRef} className="fixed w-full z-10 bottom-0 translate-y-full bg-white p-3 py-6 pt-12">
-                <ConfirmedRide setConfirmRidePanel = {setConfirmRidePanel}  setVehicleFound = {setVehicleFound} setVehiclePanelOpen = {setVehiclePanelOpen} />
+                <ConfirmedRide 
+                    setConfirmRidePanel = {setConfirmRidePanel}  
+                    setVehicleFound = {setVehicleFound} 
+                    setVehiclePanelOpen = {setVehiclePanelOpen} 
+                    pickup = {pickup}
+                    destination = {destination}
+                />
             </div>
 
             <div ref={vehcileFoundRef} className="fixed w-full z-10 bottom-0 translate-y-full bg-white p-3 py-6 pt-12">
