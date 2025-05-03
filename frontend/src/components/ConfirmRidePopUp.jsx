@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 
-const RidePopUp = (props) => {
+const ConfirmRidePopUp = (props) => {
   return (
-    <div>
+    <div className='h-screen'>
       <h5 className="p-1 text-center absolute w-[94%] top-0" onClick={ () => {
             props.setridePopupPanel(false);
         }} ><i className="text-3xl text-gray-300 ri-arrow-down-wide-fill"></i></h5>
@@ -42,8 +42,8 @@ const RidePopUp = (props) => {
             </div>
         </div>
             <button onClick={ () => {
-                props.setConfirmridePopupPanel(true);
-            } } className='w-full mt-5 bg-green-600 text-white font-semibold p-2 rounded-lg'> Confirm </button>    
+
+            } } className='w-full mt-5 bg-green-600 text-white font-semibold p-2 rounded-lg'> Accept </button>    
             <button onClick={ () => {
                 props.setridePopupPanel(false);
             } } className='w-full mt-1 bg-gray-400 text-gray-700 font-semibold p-2 rounded-lg'> Ignore </button>    
@@ -52,4 +52,4 @@ const RidePopUp = (props) => {
   )
 }
 
-export default RidePopUp
+export default ConfirmRidePopUp

@@ -5,7 +5,7 @@ const CaptainDetails = () => {
     <div>
       <div className='flex items-center justify-between'>
           <div className='flex items-center justify-start gap-3'>
-            <img className='h-10 w-10 rounded-full object-cover' src="https://static.boredpanda.com/blog/wp-content/uploads/2017/04/Virrappan2-58f79980ae6fb__880.jpg" alt="" />
+            <img className='h-10 w-10 rounded-full object-cover' src="https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg" alt="" />
             <h4 className='text-lg font-medium'>Bhavik Khanna</h4>
           </div>
           <div>
