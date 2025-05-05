@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { GoogleMap, LoadScript, Marker, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
-import { Polyline } from 'leaflet';
+import {
+  GoogleMap,
+  LoadScript,
+  Marker,
+  DirectionsService,
+  DirectionsRenderer
+} from '@react-google-maps/api';
 
 const MapView = (props) => {
-  const [currentCoor, setCurrentCoor] = useState({});
+  const [currentCoor, setCurrentCoor] = useState(null);
   const [directions, setDirections] = useState(null);
 
+  // Function to get the current location
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        setCurrentCoor({ lat, lng });
-      }, function(error) {
-        console.error('Error retrieving location: ', error);
-      });
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          setCurrentCoor({ lat, lng });
+        },
+        function (error) {
+          console.error('Error retrieving location: ', error);
+        }
+      );
     }
   };
 
@@ -22,16 +31,24 @@ const MapView = (props) => {
     getCurrentLocation();
   }, []);
 
-  const pickupCoords = props.PickupData?.lat && props.PickupData?.lng ? { lat: parseFloat(props.PickupData.lat), lng: parseFloat(props.PickupData.lng) } : null;
-  const destCoords = props.DestinationData?.lat && props.DestinationData?.lng ? { lat: parseFloat(props.DestinationData.lat), lng: parseFloat(props.DestinationData.lng) } : null;
+
+  const pickupCoords =
+    props.PickupData?.lat && props.PickupData?.lng
+      ? {
+          lat: parseFloat(props.PickupData.lat),
+          lng: parseFloat(props.PickupData.lng)
+        }
+      : null;
+
+  const destCoords =
+    props.DestinationData?.lat && props.DestinationData?.lng
+      ? {
+          lat: parseFloat(props.DestinationData.lat),
+          lng: parseFloat(props.DestinationData.lng)
+        }
+      : null;
 
   const center = pickupCoords || currentCoor;
-
-  const handleDirectionsCallback = (response) => {
-    if (response.status === 'OK') {
-      setDirections(response);
-    }
-  };
 
   useEffect(() => {
     if (pickupCoords && destCoords) {
@@ -39,29 +56,38 @@ const MapView = (props) => {
     }
   }, [pickupCoords, destCoords]);
 
+  const handleDirectionsCallback = (response) => {
+    if (response.status === 'OK') {
+      setDirections(response);  
+    }
+  };
+
+  if (!center) return <div>Loading...</div>;  
+
   return (
     <LoadScript googleMapsApiKey={import.meta.env.VITE_API_KEY}>
       <GoogleMap
         mapContainerStyle={{ width: '100%', height: '100%' }}
-        center={center}
-        zoom={13}
+        center={center}  
+        zoom={13}  
         options={{
           fullscreenControl: false,
-          zoomControl: false,
+          zoomControl: true, 
           streetViewControl: false,
           mapTypeControl: false
         }}
       >
-        <Marker position={center} />
+
         {center && <Marker position={center} />}
+
         {destCoords && <Marker position={destCoords} />}
 
-        {center && destCoords && (
+        {pickupCoords && destCoords && (
           <DirectionsService
             options={{
-              origin: center,
+              origin: pickupCoords,
               destination: destCoords,
-              travelMode: 'DRIVING',
+              travelMode: 'DRIVING'
             }}
             callback={handleDirectionsCallback}
           />
@@ -71,18 +97,7 @@ const MapView = (props) => {
           <DirectionsRenderer
             directions={directions}
             options={{
-              suppressMarkers: true,
-            }}
-          />
-        )}
-
-        {center && destCoords && (
-          <Polyline
-            path={[center, destCoords]}
-            options={{
-              strokeColor: '#FF0000',
-              strokeWeight: 3,
-              strokeOpacity: 2,
+              suppressMarkers: true 
             }}
           />
         )}

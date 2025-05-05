@@ -7,6 +7,7 @@ import RidePopUp from '../components/RidePopUp';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import ConfirmRidePopUp from '../components/ConfirmRidePopUp';
+import MapView from "../components/MapView";
 
 const CaptainHome = () => {
 
@@ -51,7 +52,7 @@ const CaptainHome = () => {
         </Link>
       </div>
       <div className='h-3/5'>
-          <img className="h-full w-full object-cover" src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif" />    
+          <MapView /> 
       </div>    
       <div className='h-2/5 p-6'>
         <CaptainDetails />

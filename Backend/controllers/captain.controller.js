@@ -84,3 +84,21 @@ module.exports.logoutCaptain = async(req, res, next) => {
 
     res.status(200).json({ message : 'Logout successful' });
 }
+
+module.exports.updateCaptainLocation = async(req, res) => {
+    const {email, lat, lng} = req.body;
+
+    try{
+        const updatedCaptain = await captainService.updateCaptainLocation(email, lat, lng);
+        res.status(200).json({
+            message : 'Captain location updated successfully',
+            captain : updatedCaptain
+        });        
+    }
+    catch(error){
+        res.status(500).json({
+            message : 'Error updating captain location',
+            error : error.message
+        });
+    }
+}

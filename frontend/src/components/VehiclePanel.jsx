@@ -5,47 +5,6 @@ import AutoIcon from "../assets/uber_auto.png";
 
 const VehiclePanel = (props) => {
 
-    const [Loading, setLoading] = useState(false);
-    const [Fares, setFares] = useState({
-        car: null,
-        moto: null,
-        auto: null
-    });
-    const [disabled, setdisabled] = useState(false);
-
-    useEffect(() => {
-        const fetchFare = async () => {
-            if(!props.PickupData?.lat || !props.PickupData?.lng || !props.DestinationData?.lng || !props.DestinationData?.lat) return;
-
-            setLoading(true);
-            const vehicleTypes = ['car','moto','auto']; 
-            const fareData = {};
-
-            for(const type of vehicleTypes) {
-                try{
-                    const start = encodeURIComponent(JSON.stringify(props.PickupData));
-                    const end = encodeURIComponent(JSON.stringify(props.DestinationData));
-                    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/map/getFare?startLocation=${start}&endLocation=${end}&vehicleType=${type}`);
-                    const data = await response.json();
-                    if(data.fare){
-                        fareData[type] = data.fare;
-                    }
-                    else{
-                        fareData[type] = null;
-                        setdisabled(true);
-                    }
-                } catch(err){
-                    console.error(err);
-                    fareData[type] = null;
-                    setdisabled(true);
-                }
-            }
-            setFares(fareData);
-            setLoading(false);
-        };
-        fetchFare();
-    }, [props.PickupData, props.DestinationData]);
-
     return (
     <div>
       <h5 className="p-1 text-center absolute w-[94%] top-0" onClick={ () => {
@@ -53,41 +12,49 @@ const VehiclePanel = (props) => {
             }} ><i className="text-3xl text-gray-300 ri-arrow-down-wide-fill"></i></h5>
                 <h2 className="font-semibold text-xl mb-5">Choose your ride</h2>
                 <div onClick={ () => {
-                    if(disabled) return;
+                    if(props.Fares.car === null) return;
                     props.setConfirmRidePanel(true);
                     props.setVehiclePanelOpen(false);
-                }} className={`flex border-2 mb-2 active:border-black rounded-xl w-full p-3 items-center justify-between ${disabled ? 'pointer-events-none opacity-50' : 'active:border-black'}`}> 
+                    props.setMyFare(props.Fares.car);
+                    props.setVehicleMode('car');
+                }} className={`flex border-2 mb-2 active:border-black rounded-xl w-full p-3 items-center justify-between ${props.Fares.car === null ? 'pointer-events-none opacity-50' : 'active:border-black'}`}> 
                     <img className="h-12 pr-3" src={CarLogo} />
                     <div className="w-1/2">
                         <h4 className="font-semibold text-lg pl-[0.1%] mb-[0.1%]">UberGo <span><i className="ri-user-3-fill pl-[0.1%]"></i>4</span></h4>
                         <h5 className="font-medium text-sm">5 mins away</h5>
                         <p className="font-normal text-xs text-gray-700">Affordable, compact rides</p>
                     </div>
-                    <h2 className="text-lg font-semibold pl-2">{Fares.car ? `₹${Fares.car}` : "Not Available"}</h2>
+                    <h2 className="text-lg font-semibold pl-2">{props.Fares.car ? `₹${props.Fares.car}` : "Not Available"}</h2>
                 </div>
                 <div onClick={ () => {
+                    if(props.Fares.moto === null) return;
                     props.setConfirmRidePanel(true);
                     props.setVehiclePanelOpen(false);
-                }} className="flex border-2 mb-2 active:border-black rounded-xl w-full p-3 items-center justify-between"> 
+                    props.setMyFare(props.Fares.moto);
+                    props.setVehicleMode('moto');
+                }} className={`flex border-2 mb-2 active:border-black rounded-xl w-full p-3 items-center justify-between ${props.Fares.moto === null ? 'pointer-events-none opacity-50' : 'active:border-black'}`}> 
                     <img className="h-12 pr-2" src={MotoIcon} />
                     <div className="w-1/2">
                         <h4 className="font-semibold text-lg pl-[0.1%] mb-[0.1%]">Moto <span><i className="ri-user-3-fill pl-[0.1%]"></i>1</span></h4>
                         <h5 className="font-medium text-sm">4 mins away</h5>
                         <p className="font-normal text-xs text-gray-700">Affordable motocycle rides</p>
                     </div>
-                    <h2 className="text-lg font-semibold pl-2">{Fares.moto ? `₹${Fares.moto}` : "Not Available"}</h2>
+                    <h2 className="text-lg font-semibold pl-2">{props.Fares.moto ? `₹${props.Fares.moto}` : "Not Available"}</h2>
                 </div>
                 <div onClick={ () => {
+                    if(props.Fares.auto === null) return;
                     props.setConfirmRidePanel(true);
                     props.setVehiclePanelOpen(false);
-                }} className="flex border-2 mb-2 active:border-black rounded-xl w-full p-3 items-center justify-between"> 
+                    props.setMyFare(props.Fares.auto);
+                    props.setVehicleMode('auto');
+                }} className={`flex border-2 mb-2 active:border-black rounded-xl w-full p-3 items-center justify-between ${props.Fares.auto === null ? 'pointer-events-none opacity-50' : 'active:border-black'}`}> 
                     <img className="h-12 pr-2" src={AutoIcon} />
                     <div className="w-1/2">
                         <h4 className="font-semibold text-lg pl-[0.1%] mb-[0.1%]">Uber Auto <span><i className="ri-user-3-fill pl-[0.1%]"></i>1</span></h4>
                         <h5 className="font-medium text-sm">3 mins away</h5>
                         <p className="font-normal text-xs text-gray-700">No bargaining, <br /> doorstep pick-up</p>
                     </div>
-                    <h2 className="text-lg font-semibold pl-2">{Fares.auto ? `₹${Fares.auto}` : "Not Available"}</h2>
+                    <h2 className="text-lg font-semibold pl-2">{props.Fares.auto ? `₹${props.Fares.auto}` : "Not Available"}</h2>
                 </div>
     </div>
   )

@@ -10,6 +10,7 @@ import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
 import 'leaflet/dist/leaflet.css';
 import MapView from "../components/MapView";
+import axios from 'axios';
 
 const Home = () => {
     const [pickup, setPickup] = useState('');
@@ -27,8 +28,14 @@ const Home = () => {
     const [waitingForDriver, setWaitingForDriver] = useState(false);
     const [locationMode, setlocationMode] = useState(null);
     const [PickupData, setPickupData] = useState({});
-    const [DestinationData, setDestinationData] = useState(null);
+    const [DestinationData, setDestinationData] = useState({});
     const [VehicleMode, setVehicleMode] = useState(null);
+    const [myFare, setMyFare ] = useState(null);
+    const [Fares, setFares] = useState({
+        car: null,
+        moto: null,
+        auto: null
+    });
 
     const submitHandler = (e) => {
         e.preventDefault();
@@ -108,6 +115,51 @@ const Home = () => {
             })
         }
     }, [waitingForDriver])
+    
+    const fetchFare = async (pickup, destination) => {
+        if (!pickup || !destination) return;
+    
+        const vehicleTypes = ['car', 'moto', 'auto'];
+        const fareData = {};
+    
+        console.log('pickup ', pickup)
+        console.log('destination ', destination)
+
+        for (const type of vehicleTypes) {
+            try {
+                const response = await fetch(
+                    `${import.meta.env.VITE_BASE_URL}/ride/getRideFare?pickup=${pickup}&destination=${destination}&vehicleType=${type}`,
+                    {
+                      method: 'GET',
+                      headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                      },
+                    }
+                  );                  
+                const data = await response.json();
+                fareData[type] = data.fare || null;
+            } catch (err) {
+                console.error(err);
+                fareData[type] = null;
+            }
+        }
+    
+        setFares(fareData);
+    };
+
+    async function createRide() {
+        const response = await axios.post('http://localhost:3000/ride/create', {
+            pickup,
+            destination,
+            VehicleMode
+        }, {
+            headers: {
+                'Authorization': 'bearer '+ localStorage.getItem('token')
+            }
+        })
+
+        console.log('create ride response.data ', response.data);
+    }
 
     return (
         <div className="h-screen relative overflow-hidden">
@@ -169,15 +221,19 @@ const Home = () => {
                         setPanelOpen = {setPanelOpen} 
                         setVehiclePanelOpen = {setVehiclePanelOpen} 
                         locationMode = {locationMode}   
+                        setPickupData = {setPickupData}
+                        setDestinationData = {setDestinationData}
+                        fetchFare = {fetchFare}
                         onLocationSelect = {(locationData) => {
+                            const name = locationData?.value || locationData || ""; 
                             if(locationMode === "pickup") {
-                                setPickupData({lat: locationData.lat, lng: locationData.lng});
-                                setPickup(locationData.name);
+                                setPickup(name);
+                                console.log('pickup ', name)
                             } else {
-                                setDestinationData({lat : locationData.lat, lng: locationData.lng});
-                                setDestination(locationData.name);
+                                setDestination(name);
+                                console.log('destination ', name)
                             }
-                        }}
+                        }}                        
                     />
                 </div>
             </div>
@@ -185,11 +241,13 @@ const Home = () => {
             <div ref = {vehiclePanelRef} className="fixed w-full z-10 bottom-0 translate-y-full bg-white p-3 py-10 pt-12">
                 <VehiclePanel 
                     setConfirmRidePanel = {setConfirmRidePanel} 
-                    setVehiclePanelOpen = {setVehiclePanelOpen} 
-                    VehicleMode = {VehicleMode} 
+                    setVehiclePanelOpen = {setVehiclePanelOpen}
                     setVehicleMode = {setVehicleMode} 
-                    PickupData = {PickupData} 
-                    DestinationData = {DestinationData} 
+                    pickup = {pickup} 
+                    destination = {destination} 
+                    setMyFare = {setMyFare}
+                    createRide = {createRide}
+                    Fares = {Fares}
                 />
             </div>
 
@@ -200,11 +258,18 @@ const Home = () => {
                     setVehiclePanelOpen = {setVehiclePanelOpen} 
                     pickup = {pickup}
                     destination = {destination}
+                    myFare = {myFare}
+                    createRide = {createRide}
                 />
             </div>
 
             <div ref={vehcileFoundRef} className="fixed w-full z-10 bottom-0 translate-y-full bg-white p-3 py-6 pt-12">
-                <LookingForDriver setVehicleFound = {setVehicleFound} />
+                <LookingForDriver 
+                    pickup = {pickup}
+                    destination = {destination}
+                    myFare = {myFare}
+                    setVehicleFound = {setVehicleFound} 
+                />
             </div>
 
             <div ref={waitingForDriverRef} className="fixed w-full z-10 bottom-0 bg-white p-3 py-6 pt-12">
