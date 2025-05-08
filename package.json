@@ -3,6 +3,8 @@
     "crypto": "^1.0.1",
     "express": "^5.1.0",
     "leaflet": "^1.9.4",
-    "leaflet-routing-machine": "^3.2.12"
+    "leaflet-routing-machine": "^3.2.12",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
   }
 }

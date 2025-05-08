@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { captainDataContext } from "../context/captainContext";
+import { CaptainDataContext } from "../context/captainContext";
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 
@@ -8,7 +8,7 @@ const CaptainProtectWrapper = ({
 }) => {
     
     const token = localStorage.getItem('token');
-    const { captain, setCaptain } = useContext(captainDataContext);
+    const { captain, setCaptain } = useContext(CaptainDataContext);
     const [ isLoading, setIsLoading ] = useState(true);
     const hasFetched = useRef(false);
 
@@ -31,7 +31,7 @@ const CaptainProtectWrapper = ({
                 });
                 
                 if(response.status === 200) {
-                    setCaptain(response.data.captain);
+                    setCaptain(response.data);
                     setIsLoading(false);
                 }
             }

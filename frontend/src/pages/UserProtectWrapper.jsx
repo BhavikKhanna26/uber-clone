@@ -33,7 +33,7 @@ const UserProtectWrapper = ({
                 });
 
                 if(response.status === 200) {
-                    setUser(response.data.user);
+                    setUser(response.data);
                     setIsLoading(false);
                 }
             } 

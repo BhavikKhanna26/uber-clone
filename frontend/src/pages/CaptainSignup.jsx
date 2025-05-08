@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { captainDataContext } from "../context/captainContext";
+import { CaptainDataContext } from "../context/captainContext";
 import Logo from "../assets/uber_driver_logo.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +22,7 @@ const CaptainSignup = () => {
     const [VehicleCapacity, setVehicleCapacity] = useState('');
 
 
-    const {captain, setCaptain} = useContext(captainDataContext);
+    const {captain, setCaptain} = useContext(CaptainDataContext);
 
     const submitHandler = async (e) => {
         e.preventDefault();

@@ -62,7 +62,13 @@ const MapView = (props) => {
     }
   };
 
-  if (!center) return <div>Loading...</div>;  
+  if (!center){
+    return (
+      <div className='h-screen flex items-center justify-center'>
+          <p className='text-3xl font-semibold'>Loading...</p>
+      </div>
+    )
+  }  
 
   return (
     <LoadScript googleMapsApiKey={import.meta.env.VITE_API_KEY}>

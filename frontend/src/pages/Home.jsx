@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Logo from "../assets/uber_logo.png";
 import { useGSAP } from '@gsap/react';
 import gsap from "gsap";
@@ -11,6 +11,8 @@ import WaitingForDriver from "../components/WaitingForDriver";
 import 'leaflet/dist/leaflet.css';
 import MapView from "../components/MapView";
 import axios from 'axios';
+import { SocketContext } from "../context/SocketContext";
+import { userDataContext } from "../context/userContext";
 
 const Home = () => {
     const [pickup, setPickup] = useState('');
@@ -36,6 +38,15 @@ const Home = () => {
         moto: null,
         auto: null
     });
+
+    const { sendMessage, recieveMessage } = useContext(SocketContext);
+    const { user } = useContext(userDataContext);
+
+    useEffect(() => {
+        if(!user) return;
+        
+        sendMessage("join", { userType: "user", userId : user._id})
+    }, [user]);
 
     const submitHandler = (e) => {
         e.preventDefault();
@@ -121,9 +132,6 @@ const Home = () => {
     
         const vehicleTypes = ['car', 'moto', 'auto'];
         const fareData = {};
-    
-        console.log('pickup ', pickup)
-        console.log('destination ', destination)
 
         for (const type of vehicleTypes) {
             try {
@@ -157,8 +165,6 @@ const Home = () => {
                 'Authorization': 'bearer '+ localStorage.getItem('token')
             }
         })
-
-        console.log('create ride response.data ', response.data);
     }
 
     return (
@@ -228,10 +234,8 @@ const Home = () => {
                             const name = locationData?.value || locationData || ""; 
                             if(locationMode === "pickup") {
                                 setPickup(name);
-                                console.log('pickup ', name)
                             } else {
                                 setDestination(name);
-                                console.log('destination ', name)
                             }
                         }}                        
                     />

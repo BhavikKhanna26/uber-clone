@@ -1,4 +1,5 @@
 const axios = require('axios');
+const captainModel = require('../models/captain.model');
 
 module.exports.getcoordinates = async (location) => {
     if (!location) {
@@ -32,7 +33,6 @@ module.exports.getcoordinates = async (location) => {
     }
 }
 
-
 module.exports.getDistanceTime = async (startLocation, endLocation) => {
     if(!startLocation ||!endLocation){
         throw new Error('Start and end locations are required');
@@ -62,8 +62,6 @@ module.exports.getDistanceTime = async (startLocation, endLocation) => {
         throw new Error(`Error getting distance and time: ${error.message}`);
     }
 }   
-
-
 
 module.exports.getNearbyPlaces = async ({lat, lng}) => {
     if(!lat || !lng){
@@ -127,4 +125,22 @@ module.exports.getSuggestions = async (query) => {
         console.error("Error fetching suggestions",err);
         throw new Error('Error fetching suggestions');
     }
+}
+
+module.exports.getCaptainsInTheRadius = async (ltd, lng, radius) => {
+
+
+    const captains = await captainModel.find({
+        location: {
+            $geoWithin: {
+                $centerSphere: [[ ltd, lng ], radius / 6371] // radius in km
+            }
+        }
+    });
+
+    if (captains.length === 0) {
+        throw new Error('No captains found in the specified radius');
+    }
+
+    return captains;
 }
