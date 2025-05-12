@@ -62,3 +62,29 @@ module.exports.getRideFare = async (req, res) => {
         return res.status(500).json({ message: 'Error fetching fare', error: error.message });
     }
 }
+
+module.exports.confirmRide = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { rideId } = req.body;
+
+    try{
+        const ride = await rideService.confirmRide(rideId, req.captain._id);
+
+        sendMessageToSocketId(ride.user.socketId, {
+            event: 'ride-confirmed',
+            data: ride
+        })
+
+        if(!ride){
+            return res.status(404).json({ message: 'Ride not found' });
+        }
+        res.status(200).json(ride);
+    } catch (error) {
+        return res.status(500).json({ message: 'Error confirming ride', error: error.message });
+    }
+
+}

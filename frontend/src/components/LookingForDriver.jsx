@@ -22,8 +22,7 @@ const LookingForDriver = (props) => {
                 <div className='flex items-center gap-5 p-3 border-b-2'>
                     <i className="text-lg ri-square-fill"></i>
                     <div>
-                        <h3 className='text-lg font-medium'>A 9/11 Gate 3</h3>
-                        <p className='text-gray-600 text-sm'>{props.destination}</p>    
+                        <h3 className='text-lg font-medium'>{props.destination}</h3>
                     </div>
                 </div>
                 <div className='flex items-center gap-5 p-3'>

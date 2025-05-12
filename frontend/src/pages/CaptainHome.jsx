@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
-import CarLogo from "../assets/uber_car.png";
 import { Link, useHref, useLocation } from 'react-router-dom';
 import UberLogo from "../assets/uber_driver_logo.png";
 import CaptainDetails from '../components/CaptainDetails';
@@ -9,7 +8,7 @@ import gsap from 'gsap';
 import ConfirmRidePopUp from '../components/ConfirmRidePopUp';
 import MapView from "../components/MapView";
 import { SocketContext } from '../context/SocketContext';
-import { CaptainDataContext } from '../context/captainContext';
+import axios from 'axios';
 
 const CaptainHome = () => {
 
@@ -61,6 +60,8 @@ const CaptainHome = () => {
 
   socket.on('new-ride', (data) => {
     console.log('New ride data received:', data);
+    setride(data);
+    setridePopupPanel(true);
   })
  
   useGSAP(function(){
@@ -89,6 +90,15 @@ const CaptainHome = () => {
     }
   }, [ConfirmridePopupPanel])
 
+  async function confirmRide() {
+    
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/ride/getRideFare`, {
+
+    });
+
+    setConfirmridePopupPanel(true);
+  }
+
   return (
     <div className='h-screen'>
       <div className='fixed p-6 top-0 flex items-center justify-between w-screen'>
@@ -105,10 +115,10 @@ const CaptainHome = () => {
       </div>              
 
       <div ref={ridePopupPanelRef} className="fixed w-full z-10 bottom-0 transalate-y-full bg-white p-3 py-10 pt-12">
-        <RidePopUp ride={ride} setridePopupPanel = {setridePopupPanel} setConfirmridePopupPanel = {setConfirmridePopupPanel}/>
+        <RidePopUp ride={ride} setridePopupPanel = {setridePopupPanel} setConfirmridePopupPanel = {setConfirmridePopupPanel} confirmRide = {confirmRide}/>
       </div>                    
       <div ref={ConfirmridePopupPanelRef} className="fixed w-full z-10 bottom-0 transalate-y-full bg-white p-3 py-10 pt-12">
-        <ConfirmRidePopUp setConfirmridePopupPanel = {setConfirmridePopupPanel} setridePopupPanel = {setridePopupPanel} />
+        <ConfirmRidePopUp ride = {ride} setConfirmridePopupPanel = {setConfirmridePopupPanel} setridePopupPanel = {setridePopupPanel} />
       </div>                    
     </div>
   )

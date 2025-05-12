@@ -31,7 +31,7 @@ const Home = () => {
     const [locationMode, setlocationMode] = useState(null);
     const [PickupData, setPickupData] = useState({});
     const [DestinationData, setDestinationData] = useState({});
-    const [VehicleMode, setVehicleMode] = useState(null);
+    const [vehicleType, setVehicleMode] = useState(null);
     const [myFare, setMyFare ] = useState(null);
     const [Fares, setFares] = useState({
         car: null,
@@ -40,6 +40,7 @@ const Home = () => {
     });
 
     const { sendMessage, recieveMessage } = useContext(SocketContext);
+    const { socket } = useContext(SocketContext);
     const { user } = useContext(userDataContext);
 
     useEffect(() => {
@@ -47,6 +48,10 @@ const Home = () => {
         
         sendMessage("join", { userType: "user", userId : user._id})
     }, [user]);
+
+    socket.on('ride-confirmed', (data) => {
+        setWaitingForDriver(true);
+    })
 
     const submitHandler = (e) => {
         e.preventDefault();
@@ -156,10 +161,11 @@ const Home = () => {
     };
 
     async function createRide() {
+        console.log("Creating ride with fare: ", myFare);
         const response = await axios.post('http://localhost:3000/ride/create', {
             pickup,
             destination,
-            VehicleMode
+            vehicleType
         }, {
             headers: {
                 'Authorization': 'bearer '+ localStorage.getItem('token')

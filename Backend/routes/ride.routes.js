@@ -21,4 +21,10 @@ router.get('/getRideFare',
     rideController.getRideFare
 )
 
+router.post('/confirmRide',
+    authMiddleware.authCaptain,
+    body('rideId').isString().withMessage('Enter valid Ride ID'),
+    rideController.confirmRide
+)
+ 
 module.exports = router;

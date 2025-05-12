@@ -12,7 +12,7 @@ const ConfirmRidePopUp = (props) => {
         <div className='flex items-center justify-between p-3 rounded-lg bg-yellow-100'>
             <div className='flex items-center gap-3'>
                 <img className='h-12 w-12 rounded-full object-cover' src="https://people.com/thmb/CmROfB5Fw4H3oJmGwr7qJTGDCGg=/4000x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(509x0:511x2)/people-headshot-lindsay-kimble-9855440283c440159d1684a4befaa97d.jpg" alt="" />
-                <h2 className='text-lg font-medium'>Jane Doe</h2>
+                <h2 className='text-lg font-medium'>{props.ride?.user.fullname.firstname + ' ' + props.ride?.user.fullname.lastname}</h2>
             </div>
             <h5 className='text-lg font-semibold'>2.2 KM</h5>
         </div>
@@ -22,22 +22,25 @@ const ConfirmRidePopUp = (props) => {
             <div className='flex items-center gap-5 p-3 border-b-2'>
                 <i className="text-lg ri-map-pin-2-fill"></i>
                 <div>
-                    <h3 className='text-lg font-medium'>562/11-A</h3>
-                    <p className='text-gray-600 text-sm'>India Gate, Delhi</p>    
+                    <h3 className='text-lg font-medium'>{props.ride?.pickup}</h3> 
                 </div> 
             </div>
             <div className='flex items-center gap-5 p-3 border-b-2'>
                 <i className="text-lg ri-square-fill"></i>
                 <div>
-                    <h3 className='text-lg font-medium'>A 9/11 Gate 3</h3>
-                    <p className='text-gray-600 text-sm'>New Gupta Colony, New Delhi</p>    
+                    <h3 className='text-lg font-medium'>{props.ride?.destination}</h3>    
                 </div>
             </div>
             <div className='flex items-center gap-5 p-3'>
                 <i className="text-lg ri-bank-card-2-fill"></i>
                 <div>
-                    <h3 className='text-lg font-medium'>₹193.20</h3>
+                    <h3 className='text-lg font-medium'>₹{props.ride?.fare}</h3>
                     <p className='text-gray-600 text-sm'>Cash</p>    
+                </div>
+            </div>
+            <div className='flex items-center gap-5 p-3 rounded-lg w-60% justify-center max-w-xl'>
+                <div>
+                    <input type="text" className='w-full h-16 text-xl font-medium bg-gray-300 px-5 rounded-lg text-center placeholder-gray-700' placeholder='Enter OTP' style={{ lineHeight: '4rem' }} />  
                 </div>
             </div>
         </div>
